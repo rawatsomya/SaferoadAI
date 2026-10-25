@@ -28,12 +28,13 @@ def getToken():
         return None
 
 # Get the token first
-TOKEN = getToken()
+TOKEN = None
+COOKIES = {}
 
-# Now set up cookies
-COOKIES = {"jwt": TOKEN}
-
-def send_message(text, image_path=None):
+def send_message(text, image_path=None):    
+    if not API_URL or not RECIEVER_ID:
+        print(f"[DEMO ALERT] {text}")
+        return {"demo": True, "message": text}
     # Fixed f-string placement
     url = f"{API_URL}/messages/send/{RECIEVER_ID}"
 

@@ -427,7 +427,7 @@ TEMPLATE = """
 
       <div class="instructions">
         <strong>Demo flow:</strong> Upload or pick a sample, hit "Process Detection" to start live processed streaming. Accident counts will appear after the stream finishes. Use the alerts button to view chat/messages (external system).<br/>
-        <strong>Chat login:</strong> email: cctv@gmail.com · password: 123456 (for demo alerts app). Click on hospital chat to see the message alerts.
+        <strong>Alerts:</strong> Demo alert integration is for testing only. No real emergency notifications are sent in demo mode.
       </div>
 
       <div class="actions-row">

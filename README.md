@@ -1,142 +1,114 @@
-# SaferoadAI
+# SaferoadAI 🚗
 
-SaferoadAI is a real-time car accident detection system that utilizes a YOLO model trained on a custom dataset. The system is designed to work with a video feed from **CCTV or live stream**, detecting accidents in real-time and sending messages to the nearest hospital using the **OLA Maps API**.
+**AI-Assisted Road Accident Detection Using Computer Vision**
+
+SaferoadAI is an accident-detection project that uses YOLOv8 and OpenCV to analyze traffic videos and display detection results through a Flask web dashboard. It also includes an alert-integration concept for communicating accident information to nearby hospitals.
+
+This repository is an adaptation of an existing open-source project, with local demo configuration and documentation improvements.
 
 ## Features
 
-- **Real-time accident detection** using YOLOv8.
-- **Custom-trained model** on a car accident dataset.
-- **Integration with CCTV or live video feeds** for practical applications.
-- **Automatic alert system** using OLA Maps API to notify the nearest hospital.
-- **Frame capture and image conversion** to URL for message attachments.
-- **Potential for further enhancements**, such as traffic control automation.
+- **Accident detection:** Uses a YOLO-based model to analyze traffic footage.
+- **Video processing:** Processes video input and displays the results through a web interface.
+- **Flask dashboard:** Provides a browser-based interface for testing the application.
+- **Frame capture:** Supports saving frames associated with detected events.
+- **Demo alert mode:** Allows local testing without sending real external alerts.
+- **Extensible design:** Provides a foundation for future improvements to accident monitoring.
+
+## Technologies Used
+
+- Python
+- YOLOv8 and Ultralytics
+- OpenCV
+- Flask
+- HTML, CSS and JavaScript
+
+## Requirements
+
+- Python 3.8 or a compatible version supported by the project's dependencies
+- pip
+- Git
+- The dependencies listed in `requirements.txt`
 
 ## Installation
 
-### Prerequisites
-
-Ensure you have the following installed before proceeding:
-
-- Python 3.8+
-- PyTorch
-- Ultralytics YOLOv8
-- OpenCV
-- Streamlit (for deployment, if needed)
-- OLA Maps API access
-
-### Clone the Repository
+Clone this repository:
 
 ```bash
-git clone https://github.com/aayush010904/SaferoadAI.git
+git clone https://github.com/rawatsomya/SaferoadAI.git
 cd SaferoadAI
 ```
 
-### Install Dependencies
+Create and activate a virtual environment.
+
+**macOS / Linux:**
 
 ```bash
-pip install -r requirements.txt
+python3 -m venv .venv
+source .venv/bin/activate
 ```
 
-### Datset
-
-Dataset used for training : [Roboflow datset URL](https://universe.roboflow.com/accident-detection-model/accident-detection-model/dataset/2)
-
-## Usage
-
-### Running the Application
-
-To start the accident detection system, run:
+Install the project dependencies:
 
 ```bash
-python app.py
+python -m pip install -r requirements.txt
 ```
 
-### How It Works
+## Running the Flask Dashboard
 
-- `app.py` imports functions from `SendMessage.py` and `NearestHospital.py` to send messages and fetch the nearest hospital.
-- When an accident is detected, the frame is saved.
-- The saved frame is converted into a URL using `Image2Url.py`.
-- The image URL is sent along with an alert message to the nearest hospital.
-
-### Training the YOLOv8 Model (If Needed)
+Start the local application:
 
 ```bash
-python model_training.ipynb
-```
-
-## Flask Live Stream Demo (uses app.py logic)
-
-The Flask app reuses the same YOLO model and detection logic defined in app.py for live MJPEG streaming.
-
-Run locally:
-
-```bash
-pip install -r requirements.txt
 python flask_app.py
 ```
 
-Then open http://localhost:5000, upload or pick a sample video, click **Process Detection** to start the live processed stream. Accident counts appear after the stream completes. The “See live alerts” button is a placeholder—point it to your real alerts/messages URL.
+If the configured port is `5001`, open:
 
-## Deployment
+http://127.0.0.1:5001
 
-### Quick local server (Waitress)
+Use the dashboard to select or upload a supported video and test the available detection workflow.
 
-```bash
-pip install waitress
-waitress-serve --port=5000 flask_app:app
-```
+**Note:** The application may require compatible model files and dependencies to be installed correctly.
 
-### Container (recommended for hosting)
+## Demo Alert Behaviour
 
-Example Dockerfile:
+The local demo configuration can print alert messages in the terminal when the external alert service is not configured.
 
-```dockerfile
-FROM python:3.11-slim
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
-COPY . .
-ENV PORT=5000
-CMD ["gunicorn", "-b", "0.0.0.0:5000", "flask_app:app"]
-```
-
-Build and run:
-
-```bash
-docker build -t saferoad-ai .
-docker run -p 5000:5000 saferoad-ai
-```
-
-Host this container on services like Render, Railway, Fly.io, AWS ECS/Fargate, or Azure Web App for Containers. Ensure ffmpeg/H.264 support is available in your base image if you need MP4 output.
+Demo alerts are for testing only. They do not contact hospitals or emergency services. Real alert delivery requires appropriate API configuration and testing.
 
 ## Project Structure
 
-```
-SaferoadAI/
-├── app.py                # Main application script
-├── requirements.txt      # Python dependencies
-├── README.md             # Project documentation
-├── .env                  # Environment variables
-├── best.pt               # Pre-trained YOLO model
-├── best_model.pt         # Additional trained model
-├── model_training.ipynb  # YOLO model training notebook
-├── Image2Url.py          # Converts detected accident frames to image URLs
-├── NearestHospital.py    # Fetches nearest hospital using OLA Maps API
-├── SendMessage.py        # Sends alert messages with accident details
-├── currentLocation.py    # Determines the user's current location
-└── other_files/          # Additional scripts or resources
-```
+| File | Purpose |
+|---|---|
+| `app.py` | Main accident-detection script |
+| `flask_app.py` | Flask web dashboard |
+| `SendMessage.py` | Alert messaging and demo-mode handling |
+| `NearestHospital.py` | Nearest-hospital lookup integration |
+| `Image2Url.py` | Image-to-URL helper |
+| `currentLocation.py` | Location-related functionality |
+| `model_training.ipynb` | Model training notebook |
+| `requirements.txt` | Python dependencies |
+| `PROJECT_INFO.md` | Project overview, limitations and future scope |
+| `best.pt`, `best_model.pt` | YOLO model files |
 
-## Future Enhancements
+## Limitations
 
-- Improving model accuracy with more training data.
-- Expanding API support for other mapping services.
-- Implementing real-time traffic management integration.
+- Detection results depend on the trained model and input video quality.
+- Model predictions should be evaluated before real-world use.
+- Hospital notifications are not active in local demo mode.
+- This project is a prototype and is not a replacement for verified emergency-response systems.
 
-## Contributions
+## Future Scope
 
-Feel free to open an issue or submit a pull request if you’d like to contribute!
+- Evaluate model accuracy on varied traffic footage.
+- Reduce false-positive detections.
+- Improve incident reporting and dashboard visualizations.
+- Test integrations with verified mapping and notification services.
+- Explore real-time CCTV input in a controlled environment.
 
+## Attribution and License
+
+This project is based on the original open-source repository by https://github.com/rawatsomya/SaferoadAI.git.
 ## License
 
-This project is licensed under the MIT License.
+This project is distributed under the MIT License. See `LICENSE.md` for details.
